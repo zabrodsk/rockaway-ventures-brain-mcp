@@ -55,6 +55,14 @@ Search the Ventures brain for the latest context on Jane Example.
 What notes in the Ventures brain mention the Series A process?
 ```
 
+To verify from a terminal:
+
+```powershell
+codex mcp list
+```
+
+You should see `rockaway-ventures`.
+
 ## Need A Token?
 
 Ask the Rockaway brain admin for a Rockaway Ventures bearer token. You also need access to the private network where `100.102.180.108` is reachable.

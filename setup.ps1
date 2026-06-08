@@ -25,6 +25,37 @@ function Invoke-NativeQuiet {
   }
 }
 
+function Set-CodexMcpConfig {
+  param(
+    [string]$ServerName,
+    [string]$Url,
+    [string]$EnvVar
+  )
+
+  $CodexDir = Join-Path $HOME ".codex"
+  $ConfigPath = Join-Path $CodexDir "config.toml"
+  New-Item -ItemType Directory -Force -Path $CodexDir | Out-Null
+
+  $Block = "[mcp_servers.$ServerName]`nurl = `"$Url`"`nbearer_token_env_var = `"$EnvVar`"`n"
+  if (Test-Path $ConfigPath) {
+    $Content = Get-Content -Raw -Path $ConfigPath
+    $Pattern = "(?ms)^\[mcp_servers\." + [regex]::Escape($ServerName) + "\]\s.*?(?=^\[|\z)"
+    if ([regex]::IsMatch($Content, $Pattern)) {
+      $Content = [regex]::Replace($Content, $Pattern, $Block)
+    } else {
+      if ($Content.Length -gt 0 -and -not $Content.EndsWith("`n")) {
+        $Content += "`n"
+      }
+      $Content += "`n" + $Block
+    }
+  } else {
+    $Content = $Block
+  }
+
+  [System.IO.File]::WriteAllText($ConfigPath, $Content, [System.Text.UTF8Encoding]::new($false))
+  Write-Host "Codex config ensured: $ConfigPath"
+}
+
 Write-Host ""
 Write-Host "$TeamLabel Brain MCP setup"
 Write-Host "This connects Claude Code and Codex to the read-only $TeamLabel brain."
@@ -63,8 +94,10 @@ if ($Codex) {
   & codex mcp add $McpName --url $McpUrl --bearer-token-env-var $TokenEnv
   Write-Host "Codex MCP configured: $McpName"
 } else {
-  Write-Host "Codex CLI not found; skipped Codex MCP setup."
+  Write-Host "Codex CLI not found; writing Codex config directly."
 }
+
+Set-CodexMcpConfig $McpName $McpUrl $TokenEnv
 
 Write-Host ""
 Write-Host "Done."
