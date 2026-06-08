@@ -5,6 +5,26 @@ $McpName = "rockaway-ventures"
 $McpUrl = "http://100.102.180.108:8789/rockaway-ventures/mcp"
 $TokenEnv = "ROCKAWAY_VENTURES_MCP_TOKEN"
 
+if (Get-Variable PSNativeCommandUseErrorActionPreference -Scope Global -ErrorAction SilentlyContinue) {
+  $global:PSNativeCommandUseErrorActionPreference = $false
+}
+
+function Invoke-NativeQuiet {
+  param(
+    [string]$Command,
+    [string[]]$Arguments
+  )
+
+  $PreviousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "SilentlyContinue"
+  try {
+    & $Command @Arguments *> $null
+  } catch {
+  } finally {
+    $ErrorActionPreference = $PreviousErrorActionPreference
+  }
+}
+
 Write-Host ""
 Write-Host "$TeamLabel Brain MCP setup"
 Write-Host "This connects Claude Code and Codex to the read-only $TeamLabel brain."
@@ -30,8 +50,8 @@ Set-Item -Path "Env:$TokenEnv" -Value $Token
 
 $Claude = Get-Command claude -ErrorAction SilentlyContinue
 if ($Claude) {
-  & claude mcp remove $McpName *> $null
-  & claude mcp add $McpName --transport http $McpUrl --header "Authorization: Bearer $Token"
+  Invoke-NativeQuiet "claude" @("mcp", "remove", $McpName)
+  & claude mcp add --transport http $McpName $McpUrl --header "Authorization: Bearer $Token"
   Write-Host "Claude Code MCP configured: $McpName"
 } else {
   Write-Host "Claude Code CLI not found; skipped Claude Code MCP setup."
@@ -39,7 +59,7 @@ if ($Claude) {
 
 $Codex = Get-Command codex -ErrorAction SilentlyContinue
 if ($Codex) {
-  & codex mcp remove $McpName *> $null
+  Invoke-NativeQuiet "codex" @("mcp", "remove", $McpName)
   & codex mcp add $McpName --url $McpUrl --bearer-token-env-var $TokenEnv
   Write-Host "Codex MCP configured: $McpName"
 } else {
