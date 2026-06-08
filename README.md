@@ -13,7 +13,17 @@ Which pages mention this person?
 
 This repository is only for the MCP connection. It does not install any extra workflow.
 
-## Install
+## Install On Windows
+
+Open PowerShell and paste:
+
+```powershell
+irm https://raw.githubusercontent.com/zabrodsk/rockaway-ventures-brain-mcp/main/setup.ps1 | iex
+```
+
+The setup asks for your bearer token. The token is hidden while you type.
+
+## Install On Mac Or Linux
 
 Open Terminal and paste:
 
