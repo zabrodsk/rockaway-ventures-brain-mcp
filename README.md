@@ -5,13 +5,13 @@ This connects Claude Code or Codex to the read-only Rockaway Ventures brain.
 After setup, you can chat naturally and ask questions like:
 
 ```text
-What does the Ventures brain know about this company?
-Search the Ventures brain for recent notes about this founder.
-What open threads do we have around this deal?
-Which pages mention this person?
+Use the Rockaway brain to answer this: what do we know about this company?
+Use the Rockaway brain to find recent notes about this founder.
+Use the Rockaway brain to find open threads around this deal.
+Use the Rockaway brain to enrich this CSV.
 ```
 
-This repository installs the MCP connection plus a small memory lookup skill that tells agents to call `memory_lookup` first.
+This repository connects the Rockaway Ventures brain and installs a small Rockaway brain skill so Claude Code or Codex knows how to ask it questions.
 
 ## Install On Windows
 
@@ -41,8 +41,7 @@ MCP URL:  http://100.102.180.108:8789/rockaway-ventures/mcp
 Access:   read-only
 ```
 
-Available brain tools include `memory_lookup`, `brain_help`, search, query, page reads, links, backlinks, QMD deeper retrieval, and stats. The MCP cannot edit the brain.
-For speed, agents should use `memory_lookup` first. It uses the Mac mini's sanitized Ventures QMD index first, then falls back to GBrain.
+The brain connection is read-only. It can help answer questions, summarize context, and enrich CSVs, but it cannot edit the brain.
 
 ## How To Use It
 
@@ -51,18 +50,18 @@ After setup, restart Claude Code or Codex if it was already open.
 Then ask normal questions:
 
 ```text
-Use the Rockaway Ventures brain to summarize what we know about Acme.
-Search the Ventures brain for the latest context on Jane Example.
-What notes in the Ventures brain mention the Series A process?
+Use the Rockaway brain to answer this: what do we know about Acme?
+Use the Rockaway brain to find what we know about Jane Example.
+Use the Rockaway brain to find notes related to the Series A process.
 ```
 
 For CSV or spreadsheet lookup, tell Codex or Claude:
 
 ```text
-Use the Rockaway memory lookup skill for this team. For each CSV row, call memory_lookup first, then get_page only for the strongest matches.
+Use the Rockaway brain to enrich this CSV.
 ```
 
-Expected output columns: `row_id`, `query`, `matched_pages`, `confidence`, `summary`, `recommended_next_step`, `source_slugs`.
+Useful output columns are `row`, `match`, `confidence`, `summary`, `next step`, and `sources`.
 
 To verify from a terminal:
 

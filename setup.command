@@ -7,13 +7,13 @@ MCP_URL="http://100.102.180.108:8789/rockaway-ventures/mcp"
 TOKEN_ENV="ROCKAWAY_VENTURES_MCP_TOKEN"
 ENV_DIR="$HOME/.rockaway-brain-mcp"
 ENV_FILE="$ENV_DIR/ventures.env"
-SKILL_NAME="rockaway-ventures-memory-lookup"
+SKILL_NAME="rockaway-ventures-brain"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 install_skill() {
   local src="$ROOT/skills/$SKILL_NAME"
   if [[ ! -f "$src/SKILL.md" ]]; then
-    echo "Memory lookup skill not found at: $src"
+    echo "Rockaway brain skill not found at: $src"
     return 0
   fi
 
@@ -22,7 +22,7 @@ install_skill() {
     rm -rf "$base/$SKILL_NAME"
     cp -R "$src" "$base/$SKILL_NAME"
   done
-  echo "Memory lookup skill installed: $SKILL_NAME"
+  echo "Rockaway brain skill installed: $SKILL_NAME"
 }
 
 echo
@@ -83,6 +83,6 @@ echo "Token saved locally at: $ENV_FILE"
 echo "Restart Claude Code or Codex if they were already open."
 echo
 echo "Try asking:"
-echo "  Use the Rockaway Ventures memory lookup skill for this company."
-echo "  For each CSV row, call memory_lookup first, then get_page only for the strongest matches."
+echo "  Use the Rockaway brain to answer this: what do we know about this company?"
+echo "  Use the Rockaway brain to enrich this CSV."
 echo
