@@ -13,6 +13,23 @@ Use the Rockaway brain to enrich this CSV.
 
 This repository connects the Rockaway Ventures brain and installs a small Rockaway brain skill so Claude Code or Codex knows how to ask it questions.
 
+## What You Install
+
+This one setup gives you both pieces:
+
+```text
+1. The read-only Rockaway Ventures brain connection.
+2. The Rockaway Ventures brain skill.
+```
+
+After setup, the skill command is:
+
+```text
+$rockaway-ventures-brain
+```
+
+Use that command at the start of your message when you want Claude Code or Codex to use the Rockaway Ventures brain.
+
 ## Install On Windows
 
 Open PowerShell and paste:
@@ -23,6 +40,8 @@ irm https://raw.githubusercontent.com/zabrodsk/rockaway-ventures-brain-mcp/main/
 
 The setup asks for your bearer token. The token is hidden while you type.
 
+After setup finishes, restart Claude Code or Codex if it was already open.
+
 ## Install On Mac Or Linux
 
 Open Terminal and paste:
@@ -32,6 +51,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/zabrodsk/rockaway-ventur
 ```
 
 The setup asks for your bearer token. The token is hidden while you type.
+
+After setup finishes, restart Claude Code or Codex if it was already open.
 
 ## What Gets Connected
 
@@ -45,20 +66,30 @@ The brain connection is read-only. It can help answer questions, summarize conte
 
 ## How To Use It
 
-After setup, restart Claude Code or Codex if it was already open.
-
-Then ask normal questions:
+After setup, use this skill command:
 
 ```text
-Use the Rockaway brain to answer this: what do we know about Acme?
-Use the Rockaway brain to find what we know about Jane Example.
-Use the Rockaway brain to find notes related to the Series A process.
+$rockaway-ventures-brain
+```
+
+The easiest pattern is:
+
+```text
+$rockaway-ventures-brain Use the Rockaway brain to answer this: ...
+```
+
+Examples:
+
+```text
+$rockaway-ventures-brain Use the Rockaway brain to answer this: what do we know about Acme?
+$rockaway-ventures-brain Use the Rockaway brain to find what we know about Jane Example.
+$rockaway-ventures-brain Use the Rockaway brain to find notes related to the Series A process.
 ```
 
 For CSV or spreadsheet lookup, tell Codex or Claude:
 
 ```text
-Use the Rockaway brain to enrich this CSV.
+$rockaway-ventures-brain Use the Rockaway brain to enrich this CSV.
 ```
 
 Useful output columns are `row`, `match`, `confidence`, `summary`, `next step`, and `sources`.
