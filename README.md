@@ -11,7 +11,7 @@ What open threads do we have around this deal?
 Which pages mention this person?
 ```
 
-This repository is only for the MCP connection. It does not install any extra workflow.
+This repository installs the MCP connection plus a small memory lookup skill that tells agents to call `memory_lookup` first.
 
 ## Install On Windows
 
@@ -41,7 +41,8 @@ MCP URL:  http://100.102.180.108:8789/rockaway-ventures/mcp
 Access:   read-only
 ```
 
-Available brain tools include search, query, page reads, links, backlinks, and stats. The MCP cannot edit the brain.
+Available brain tools include `memory_lookup`, `brain_help`, search, query, page reads, links, backlinks, QMD deeper retrieval, and stats. The MCP cannot edit the brain.
+For speed, agents should use `memory_lookup` first. It uses the Mac mini's sanitized Ventures QMD index first, then falls back to GBrain.
 
 ## How To Use It
 
@@ -54,6 +55,14 @@ Use the Rockaway Ventures brain to summarize what we know about Acme.
 Search the Ventures brain for the latest context on Jane Example.
 What notes in the Ventures brain mention the Series A process?
 ```
+
+For CSV or spreadsheet lookup, tell Codex or Claude:
+
+```text
+Use the Rockaway memory lookup skill for this team. For each CSV row, call memory_lookup first, then get_page only for the strongest matches.
+```
+
+Expected output columns: `row_id`, `query`, `matched_pages`, `confidence`, `summary`, `recommended_next_step`, `source_slugs`.
 
 To verify from a terminal:
 

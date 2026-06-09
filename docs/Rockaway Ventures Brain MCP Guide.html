@@ -49,14 +49,14 @@
       <ul>
         <li>A read-only MCP connection to the Rockaway Ventures brain.</li>
         <li>It lets Claude Code or Codex search and read brain context during chat.</li>
-        <li>It is for general questions about what is in the brain.</li>
+        <li>It also installs a small memory lookup skill that tells agents to call memory_lookup first.</li>
       </ul>
     </div>
     <div class="card">
       <h2>What This Is Not</h2>
       <ul>
-        <li>Not a bundled workflow.</li>
-        <li>Not an app-specific automation.</li>
+        <li>Not a meeting-prep packet generator.</li>
+        <li>Not an app-specific automation beyond fast lookup guidance.</li>
         <li>Not a way to edit the brain.</li>
       </ul>
     </div>
@@ -77,19 +77,23 @@
       <pre>MCP name: rockaway-ventures
 MCP URL:  http://100.102.180.108:8789/rockaway-ventures/mcp
 Access:   read-only</pre>
-      <p class="small">You need private-network access to reach this address and a bearer token from the Rockaway brain admin.</p>
+      <p class="small">You need private-network access to reach this address and a bearer token from the Rockaway brain admin. For speed, agents should call <strong>memory_lookup</strong> first; it uses the sanitized Ventures QMD index before falling back to GBrain.</p>
     </div>
   </section>
 
   <section class="page-break">
     <h2><span class="number">2</span>How To Ask Questions</h2>
-    <p>After setup, restart Claude Code or Codex if it was already open. Then ask normal questions.</p>
+    <p>After setup, restart Claude Code or Codex if it was already open. Then ask normal questions. The recommended first MCP tool is <strong>memory_lookup</strong>; it uses Mac mini-side QMD memory first and <strong>get_page</strong> only for the strongest matches.</p>
     <div class="step">
       <div class="label">Examples</div>
       <pre>Use the Rockaway Ventures brain to summarize what we know about Acme.
 Search the Ventures brain for recent notes about this founder.
 What open threads do we have around this deal?
 Which pages mention this person?</pre>
+    </div>
+    <div class="step">
+      <div class="label">CSV prompt</div>
+      <pre>Use the Rockaway memory lookup skill for this team. For each CSV row, call memory_lookup first, then get_page only for the strongest matches.</pre>
     </div>
   </section>
 

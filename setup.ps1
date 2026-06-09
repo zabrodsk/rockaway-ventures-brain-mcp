@@ -4,6 +4,7 @@ $TeamLabel = "Rockaway Ventures"
 $McpName = "rockaway-ventures"
 $McpUrl = "http://100.102.180.108:8789/rockaway-ventures/mcp"
 $TokenEnv = "ROCKAWAY_VENTURES_MCP_TOKEN"
+$SkillName = "rockaway-ventures-memory-lookup"
 
 if (Get-Variable PSNativeCommandUseErrorActionPreference -Scope Global -ErrorAction SilentlyContinue) {
   $global:PSNativeCommandUseErrorActionPreference = $false
@@ -56,6 +57,24 @@ function Set-CodexMcpConfig {
   Write-Host "Codex config ensured: $ConfigPath"
 }
 
+function Install-MemoryLookupSkill {
+  $Source = Join-Path $PSScriptRoot "skills\$SkillName"
+  if (-not (Test-Path (Join-Path $Source "SKILL.md"))) {
+    Write-Host "Memory lookup skill not found at: $Source"
+    return
+  }
+
+  foreach ($Base in @((Join-Path $HOME ".codex\skills"), (Join-Path $HOME ".claude\skills"), (Join-Path $HOME ".agents\skills"))) {
+    New-Item -ItemType Directory -Force -Path $Base | Out-Null
+    $Dest = Join-Path $Base $SkillName
+    if (Test-Path $Dest) {
+      Remove-Item -Recurse -Force $Dest
+    }
+    Copy-Item -Recurse -Path $Source -Destination $Dest
+  }
+  Write-Host "Memory lookup skill installed: $SkillName"
+}
+
 Write-Host ""
 Write-Host "$TeamLabel Brain MCP setup"
 Write-Host "This connects Claude Code and Codex to the read-only $TeamLabel brain."
@@ -72,9 +91,12 @@ try {
 }
 
 if ([string]::IsNullOrWhiteSpace($Token)) {
+  Install-MemoryLookupSkill
   Write-Host "No token entered. MCP setup was skipped."
   exit 0
 }
+
+Install-MemoryLookupSkill
 
 [Environment]::SetEnvironmentVariable($TokenEnv, $Token, "User")
 Set-Item -Path "Env:$TokenEnv" -Value $Token
@@ -105,6 +127,6 @@ Write-Host "Token saved to your Windows user environment variable: $TokenEnv"
 Write-Host "Restart Claude Code or Codex if they were already open."
 Write-Host ""
 Write-Host "Try asking:"
-Write-Host "  What does the Ventures brain know about this company?"
-Write-Host "  Search the Ventures brain for recent notes about this founder."
+Write-Host "  Use the Rockaway Ventures memory lookup skill for this company."
+Write-Host "  For each CSV row, call memory_lookup first, then get_page only for the strongest matches."
 Write-Host ""
