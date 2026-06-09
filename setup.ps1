@@ -5,6 +5,7 @@ $McpName = "rockaway-ventures"
 $McpUrl = "http://100.102.180.108:8789/rockaway-ventures/mcp"
 $TokenEnv = "ROCKAWAY_VENTURES_MCP_TOKEN"
 $SkillName = "rockaway-ventures-brain"
+$SkillRawUrl = "https://raw.githubusercontent.com/zabrodsk/rockaway-ventures-brain-mcp/main/skills/rockaway-ventures-brain/SKILL.md"
 
 if (Get-Variable PSNativeCommandUseErrorActionPreference -Scope Global -ErrorAction SilentlyContinue) {
   $global:PSNativeCommandUseErrorActionPreference = $false
@@ -57,21 +58,39 @@ function Set-CodexMcpConfig {
   Write-Host "Codex config ensured: $ConfigPath"
 }
 
-function Install-MemoryLookupSkill {
-  $Source = Join-Path $PSScriptRoot "skills\$SkillName"
-  if (-not (Test-Path (Join-Path $Source "SKILL.md"))) {
-    Write-Host "Rockaway brain skill not found at: $Source"
-    return
+function Install-RockawayBrainSkill {
+  $Source = $null
+  $TempRoot = $null
+
+  if (-not [string]::IsNullOrWhiteSpace($PSScriptRoot)) {
+    $Candidate = Join-Path $PSScriptRoot "skills\$SkillName"
+    if (Test-Path (Join-Path $Candidate "SKILL.md")) {
+      $Source = $Candidate
+    }
   }
 
-  foreach ($Base in @((Join-Path $HOME ".codex\skills"), (Join-Path $HOME ".claude\skills"), (Join-Path $HOME ".agents\skills"))) {
-    New-Item -ItemType Directory -Force -Path $Base | Out-Null
-    $Dest = Join-Path $Base $SkillName
-    if (Test-Path $Dest) {
-      Remove-Item -Recurse -Force $Dest
-    }
-    Copy-Item -Recurse -Path $Source -Destination $Dest
+  if (-not $Source) {
+    $TempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("rockaway-brain-skill-" + [guid]::NewGuid().ToString("N"))
+    $Source = Join-Path $TempRoot $SkillName
+    New-Item -ItemType Directory -Force -Path $Source | Out-Null
+    Invoke-WebRequest -Uri $SkillRawUrl -UseBasicParsing -OutFile (Join-Path $Source "SKILL.md")
   }
+
+  try {
+    foreach ($Base in @((Join-Path $HOME ".codex\skills"), (Join-Path $HOME ".claude\skills"), (Join-Path $HOME ".agents\skills"))) {
+      New-Item -ItemType Directory -Force -Path $Base | Out-Null
+      $Dest = Join-Path $Base $SkillName
+      if (Test-Path $Dest) {
+        Remove-Item -Recurse -Force $Dest
+      }
+      Copy-Item -Recurse -Path $Source -Destination $Dest
+    }
+  } finally {
+    if ($TempRoot -and (Test-Path $TempRoot)) {
+      Remove-Item -Recurse -Force $TempRoot
+    }
+  }
+
   Write-Host "Rockaway brain skill installed: $SkillName"
 }
 
@@ -91,12 +110,12 @@ try {
 }
 
 if ([string]::IsNullOrWhiteSpace($Token)) {
-  Install-MemoryLookupSkill
+  Install-RockawayBrainSkill
   Write-Host "No token entered. MCP setup was skipped."
   exit 0
 }
 
-Install-MemoryLookupSkill
+Install-RockawayBrainSkill
 
 [Environment]::SetEnvironmentVariable($TokenEnv, $Token, "User")
 Set-Item -Path "Env:$TokenEnv" -Value $Token
