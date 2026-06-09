@@ -19,7 +19,7 @@ install_skill() {
     return 0
   fi
 
-  for base in "$HOME/.codex/skills" "$HOME/.claude/skills" "$HOME/.agents/skills"; do
+  for base in "$HOME/.codex/skills" "$HOME/.claude/skills"; do
     mkdir -p "$base"
     rm -rf "$base/$SKILL_NAME"
     cp -R "$src" "$base/$SKILL_NAME"

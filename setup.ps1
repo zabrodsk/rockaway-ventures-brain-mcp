@@ -109,7 +109,7 @@ function Install-RockawayBrainSkill {
   }
 
   try {
-    foreach ($Base in @((Join-Path $HOME ".codex\skills"), (Join-Path $HOME ".claude\skills"), (Join-Path $HOME ".agents\skills"))) {
+    foreach ($Base in @((Join-Path $HOME ".codex\skills"), (Join-Path $HOME ".claude\skills"))) {
       New-Item -ItemType Directory -Force -Path $Base | Out-Null
       $Dest = Join-Path $Base $SkillName
       if (Test-Path $Dest) {
